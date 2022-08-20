@@ -21,7 +21,7 @@ class GameService {
     socket.emit("update_game", { matrix: gameMatrix });
   }
 
-  /*public async onGameUpdate(
+  public async onGameUpdate(
     socket: Socket,
     listiner: (matrix: IPlayMatrix) => void
   ) {
