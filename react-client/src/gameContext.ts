@@ -15,12 +15,15 @@ export interface IGameContextProps {
   setP2Table: (cards: []) => void
   deck: string[]
   setDeck: (cards: []) => void
+  roomName: string;
+  setRoomName: (name: string) => void;
+  playerSymbol: "P1" | "P2";
+  setPlayerSymbol: (symbol: "P1" | "P2") => void;
   /*player1Score: number;
   setPlayer1Score: (score: number) => void;
   player2Score: number;
   setPlayer2Score: (score: number) => void;
-  roomName: string;
-  setRoomName: (name: string) => void;*/
+  */
 }
 
 const defaultState: IGameContextProps = {
@@ -37,7 +40,11 @@ const defaultState: IGameContextProps = {
   p2Table: [],
   setP2Table: (cards: []) => {},
   deck: [],
-  setDeck: (cards: []) => {}
+  setDeck: (cards: []) => {},
+  roomName: "",
+  setRoomName: () => {},
+  playerSymbol: "P1",
+  setPlayerSymbol: () => {},
 };
 
 export default React.createContext(defaultState);

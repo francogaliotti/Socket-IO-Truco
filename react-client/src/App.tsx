@@ -3,6 +3,8 @@ import './App.css';
 import socketService from './services/socketService';
 import styled from "styled-components";
 import GameContext, { IGameContextProps } from './gameContext';
+import { JoinRoom } from './components/joinRoom';
+import Game from './components/game';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -11,7 +13,6 @@ const AppContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 1em;
-  background-color: #000;
 `;
 
 const WelcomeText = styled.h1`
@@ -37,6 +38,8 @@ function App() {
   const [p1Table, setP1Table] = useState([])
   const [p2Table, setP2Table] = useState([])
   const [deck, setDeck] = useState([])
+  const [roomName, setRoomName] = useState("");
+  const [playerSymbol, setPlayerSymbol] = useState<"P1" | "P2">("P1");
 
   const gameContextValue: IGameContextProps = {
     isInRoom,
@@ -52,7 +55,11 @@ function App() {
     p2Table,
     setP2Table,
     deck,
-    setDeck
+    setDeck,
+    roomName,
+    setRoomName,
+    playerSymbol,
+    setPlayerSymbol
   };
 
   const connectSocket = async () => {
@@ -73,7 +80,7 @@ function App() {
         <WelcomeText>Truco!</WelcomeText>
         <MainContainer>
           {!isInRoom && <JoinRoom />}
-          {isInRoom && <><Game /><ScoreTable/></>}
+          {isInRoom && <><Game /></>}
         </MainContainer>
       </AppContainer>
     </GameContext.Provider>
