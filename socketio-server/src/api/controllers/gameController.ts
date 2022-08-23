@@ -25,6 +25,7 @@ import {
       @MessageBody() message: any
     ) {
       const gameRoom = this.getSocketGameRoom(socket);
+      //console.log(message)
       socket.to(gameRoom).emit("on_game_update", message);
     }
   

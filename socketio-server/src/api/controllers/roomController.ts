@@ -35,10 +35,10 @@ import {
   
         if (io.sockets.adapter.rooms.get(message.roomId).size === 2) {
           // Sends event to the actual socket
-          socket.emit("start_game", { start: true, symbol: "P1" });
+          socket.emit("start_game", { symbol: "P1" });
           // Sends event to the other sockets in the room
           socket.to(message.roomId)
-            .emit("start_game", { start: false, symbol: "P2" });
+            .emit("start_game", { symbol: "P2" });
         }
       }
     }
