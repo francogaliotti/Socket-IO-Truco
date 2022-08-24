@@ -40,6 +40,8 @@ function App() {
   const [deck, setDeck] = useState([])
   const [roomName, setRoomName] = useState("");
   const [playerSymbol, setPlayerSymbol] = useState<"P1" | "P2">("P1");
+  const [player1Score, setPlayer1Score] = useState(0)
+  const [player2Score, setPlayer2Score] = useState(0)
 
   const gameContextValue: IGameContextProps = {
     isInRoom,
@@ -59,7 +61,11 @@ function App() {
     roomName,
     setRoomName,
     playerSymbol,
-    setPlayerSymbol
+    setPlayerSymbol,
+    player1Score,
+    setPlayer1Score,
+    player2Score,
+    setPlayer2Score
   };
 
   const connectSocket = async () => {
@@ -77,9 +83,9 @@ function App() {
   return (
     <GameContext.Provider value={gameContextValue}>
       <AppContainer>
-        <WelcomeText>Truco!</WelcomeText>
+        
         <MainContainer>
-          {!isInRoom && <JoinRoom />}
+          {!isInRoom && <><WelcomeText>Truco!</WelcomeText> <JoinRoom /></>}
           {isInRoom && <><Game /></>}
         </MainContainer>
       </AppContainer>

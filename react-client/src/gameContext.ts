@@ -19,11 +19,10 @@ export interface IGameContextProps {
   setRoomName: (name: string) => void;
   playerSymbol: "P1" | "P2";
   setPlayerSymbol: (symbol: "P1" | "P2") => void;
-  /*player1Score: number;
+  player1Score: number;
   setPlayer1Score: (score: number) => void;
   player2Score: number;
   setPlayer2Score: (score: number) => void;
-  */
 }
 
 const defaultState: IGameContextProps = {
@@ -45,6 +44,10 @@ const defaultState: IGameContextProps = {
   setRoomName: () => {},
   playerSymbol: "P1",
   setPlayerSymbol: () => {},
+  player1Score: 0,
+  setPlayer1Score: () => {},
+  player2Score: 0,
+  setPlayer2Score: () => {}
 };
 
 export default React.createContext(defaultState);
