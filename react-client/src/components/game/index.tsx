@@ -39,6 +39,7 @@ const TableContainer = styled.div`
   height: 350px;
   width: 350px;
   justify-content: center;
+  box-shadow: 10px 5px 5px black;
 `;
 
 const SingleTable = styled.div`
@@ -199,6 +200,39 @@ function Game() {
             });
     };
 
+    const setScore = async (player: number, operation: string) => {
+        let newBoard = { ...board }
+        if (operation == "+") {
+            if (player == 1) {
+                newBoard = {
+                    ...board,
+                    player1Score: board.player1Score + 1
+                }
+            } else {
+                newBoard = {
+                    ...board,
+                    player2Score: board.player2Score + 1
+                }
+            }
+        } else {
+            if (player == 1) {
+                newBoard = {
+                    ...board,
+                    player1Score: board.player1Score - 1
+                }
+            } else {
+                newBoard = {
+                    ...board,
+                    player2Score: board.player2Score - 1
+                }
+            }
+        }
+        setBoard(newBoard)
+        if (socketService.socket) {
+            await gameService.updateGame(socketService.socket, newBoard);
+        }
+    }
+
 
     useEffect(() => {
         handleGameStart()
@@ -269,25 +303,15 @@ function Game() {
             <ScoreTable>
                 <SingleScore>
                     <h2>J1</h2>
-                    {tallyMarks(board.player1Score)}
-                    <ScoreButton onClick={() => {
-                        setBoard({
-                            ...board,
-                            player1Score: board.player1Score + 1})
-                    }}>+</ScoreButton>
-                    <ScoreButton onClick={() => { setBoard({
-                            ...board,
-                            player1Score: board.player1Score - 1}) }}>-</ScoreButton>
+                    {tallyMarks(board.player1Score,{five : "卌", one : "l"})}
+                    <ScoreButton onClick={() => { setScore(1, "+") }}>+</ScoreButton>
+                    <ScoreButton onClick={() => { setScore(1, "-") }}>-</ScoreButton>
                 </SingleScore>
                 <SingleScore>
                     <h2>J2</h2>
-                    {tallyMarks(board.player2Score)}
-                    <ScoreButton onClick={() => { setBoard({
-                            ...board,
-                            player2Score: board.player2Score + 1}) }}>+</ScoreButton>
-                    <ScoreButton onClick={() => { setBoard({
-                            ...board,
-                            player2Score: board.player2Score - 1}) }}>-</ScoreButton>
+                    {tallyMarks(board.player2Score,{five : "卌", one : "l"})}
+                    <ScoreButton onClick={() => { setScore(2, "+") }}>+</ScoreButton>
+                    <ScoreButton onClick={() => { setScore(2, "-") }}>-</ScoreButton>
                 </SingleScore>
             </ScoreTable>
             <ShuffleButton onClick={() => { shuffleCards() }}>Mezclar</ShuffleButton>
