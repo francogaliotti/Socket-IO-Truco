@@ -34,47 +34,23 @@ function App() {
 
   const [isInRoom, setInRoom] = useState(false);
   const [isGameStarted, setGameStarted] = useState(false);
-  const [p1Hand, setP1Hand] = useState([])
-  const [p2Hand, setP2Hand] = useState([])
-  const [p1Table, setP1Table] = useState([])
-  const [p2Table, setP2Table] = useState([])
-  const [deck, setDeck] = useState([])
   const [roomName, setRoomName] = useState("");
   const [playerSymbol, setPlayerSymbol] = useState<"P1" | "P2">("P1");
-  const [player1Score, setPlayer1Score] = useState(0)
-  const [player2Score, setPlayer2Score] = useState(0)
+
 
   const gameContextValue: IGameContextProps = {
     isInRoom,
     setInRoom,
     isGameStarted,
     setGameStarted,
-    p1Hand,
-    setP1Hand,
-    p2Hand,
-    setP2Hand,
-    p1Table,
-    setP1Table,
-    p2Table,
-    setP2Table,
-    deck,
-    setDeck,
     roomName,
     setRoomName,
     playerSymbol,
     setPlayerSymbol,
-    player1Score,
-    setPlayer1Score,
-    player2Score,
-    setPlayer2Score
+
   };
 
   const connectSocket = async () => {
-    const socket = await socketService
-      .connect("http://localhost:9000")
-      .catch((err) => {
-        console.log("Error: ", err);
-      });
   };
 
   useEffect(() => {

@@ -58,25 +58,6 @@ const Card = styled.div`
     justify-content: center;
 `;
 
-const ShuffleButton = styled.button`
-  outline: none;
-  background-color: #8e44ad;
-  color: #fff;
-  font-size: 17px;
-  border: 2px solid transparent;
-  border-radius: 5px;
-  padding: 4px 18px;
-  transition: all 230ms ease-in-out;
-  margin-top: 1em;
-  cursor: pointer;
-
-  &:hover {
-    background-color: transparent;
-    border: 2px solid #8e44ad;
-    color: #8e44ad;
-  }
-`;
-
 const ScoreTable = styled.div`
     display: flex;
     position: absolute;
@@ -106,6 +87,43 @@ const ScoreButton = styled.button`
     text-shadow: 4px 1px 1px black;
   }
 `
+const LeftDeck = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 100px;
+  position: absolute;
+  margin-left: -100px;
+  margin-top: -400px;
+`
+
+const RightDeck = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 100px;
+  position: absolute;
+  margin-left: 400px;
+  margin-top: -220px;
+`
+const ReturnButton = styled.button`
+  outline: none;
+  background-color: #8e44ad;
+  color: #fff;
+  font-size: 17px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  padding: 4px 18px;
+  transition: all 230ms ease-in-out;
+  //margin-top: 1em;
+  cursor: pointer;
+  position: absolute;
+  top: 30px;
+  left: 5%;
+  &:hover {
+    background-color: transparent;
+    border: 2px solid #8e44ad;
+    color: #8e44ad;
+  }
+`
 
 export interface IGameBoard {
     p1Hand: Array<string>;
@@ -114,7 +132,8 @@ export interface IGameBoard {
     p2Table: Array<string>;
     deck: Array<string>;
     player1Score: number;
-    player2Score: number
+    player2Score: number;
+    playerTurn: string
 }
 export interface IStartGame {
     symbol: "P1" | "P2";
@@ -129,6 +148,7 @@ function Game() {
         setInRoom,
         roomName,
         setRoomName,
+
     } = useContext(gameContext);
 
     const [board, setBoard] = useState<IGameBoard>({
@@ -138,25 +158,51 @@ function Game() {
         p2Table: [],
         deck: fullDeck,
         player1Score: 0,
-        player2Score: 0
+        player2Score: 0,
+        playerTurn: "P1"
     })
 
-    const shuffleCards = () => {
-        let newDeck = fullDeck.sort(() => Math.random() - 0.5)
-        let newP1H = [newDeck[0], newDeck[2], newDeck[4]]
-        let newP2H = [newDeck[1], newDeck[3], newDeck[5]]
-        const newBoard = {
-            ...board,
-            p1Hand: newP1H,
-            p2Hand: newP2H,
-            p1Table: [],
-            p2Table: [],
-            deck: newDeck
+    const shuffleCardsP1 = () => {
+        if (board.playerTurn == "P1" && playerSymbol == "P1") {
+            let newDeck = fullDeck.sort(() => Math.random() - 0.5)
+            let newP1H = [newDeck[0], newDeck[2], newDeck[4]]
+            let newP2H = [newDeck[1], newDeck[3], newDeck[5]]
+            const newBoard = {
+                ...board,
+                p1Hand: newP1H,
+                p2Hand: newP2H,
+                p1Table: [],
+                p2Table: [],
+                deck: newDeck,
+                playerTurn: "P2"
+            }
+            setBoard(newBoard)
+            console.log(newBoard)
+            if (socketService.socket) {
+                gameService.updateGame(socketService.socket, newBoard);
+            }
         }
-        setBoard(newBoard)
-        console.log(newBoard)
-        if (socketService.socket) {
-            gameService.updateGame(socketService.socket, newBoard);
+    }
+
+    const shuffleCardsP2 = () => {
+        if (board.playerTurn == "P2" && playerSymbol == "P2") {
+            let newDeck = fullDeck.sort(() => Math.random() - 0.5)
+            let newP1H = [newDeck[0], newDeck[2], newDeck[4]]
+            let newP2H = [newDeck[1], newDeck[3], newDeck[5]]
+            const newBoard = {
+                ...board,
+                p1Hand: newP1H,
+                p2Hand: newP2H,
+                p1Table: [],
+                p2Table: [],
+                deck: newDeck,
+                playerTurn: "P1"
+            }
+            setBoard(newBoard)
+            console.log(newBoard)
+            if (socketService.socket) {
+                gameService.updateGame(socketService.socket, newBoard);
+            }
         }
     }
 
@@ -184,11 +230,27 @@ function Game() {
         }
     }
 
+    const leaveRoom = async (e: React.FormEvent) => {
+        e.preventDefault();
+    
+        const socket = socketService.socket;
+        if (!socket) return;
+    
+    
+        const lived = await gameService
+          .leaveGameRoom(socket, roomName)
+    
+    
+        if (lived) setInRoom(false);
+    
+      };
+
     const handleGameStart = () => {
         if (socketService.socket)
             gameService.onStartGame(socketService.socket, (options) => {
                 setGameStarted(true);
                 setPlayerSymbol(options.symbol);
+                console.log(options.symbol)
             });
     };
 
@@ -233,15 +295,29 @@ function Game() {
         }
     }
 
+    const [rivalLeft, setRivalLeft] = useState(false)
+
+    const handleLoneliness = () => {
+        if (socketService.socket)
+            gameService.aloneInRoom(socketService.socket, () => {
+                setRivalLeft(true)
+            })
+    }
+
 
     useEffect(() => {
         handleGameStart()
         handleGameUpdate()
+        handleLoneliness()
     }, [])
 
 
     return (
         <MainContainer>
+            <ReturnButton onClick={leaveRoom}>Volver a Inicio</ReturnButton>
+            {rivalLeft && (
+                <h2>Tu Rival Abandonó la Partida</h2>
+            )}
             <Hand2Container>
                 {playerSymbol == "P1" ? <>
                     <Card>
@@ -303,18 +379,28 @@ function Game() {
             <ScoreTable>
                 <SingleScore>
                     <h2>J1</h2>
-                    {tallyMarks(board.player1Score,{five : "卌", one : "l"})}
-                    <ScoreButton onClick={() => { setScore(1, "+") }}>+</ScoreButton>
-                    <ScoreButton onClick={() => { setScore(1, "-") }}>-</ScoreButton>
+                    {tallyMarks(board.player1Score, { five: "卌", one: "l" })}
+                    {playerSymbol == "P1" && <>
+                        <ScoreButton onClick={() => { setScore(1, "+") }}>+</ScoreButton>
+                        <ScoreButton onClick={() => { setScore(1, "-") }}>-</ScoreButton>
+                    </>}
                 </SingleScore>
                 <SingleScore>
                     <h2>J2</h2>
-                    {tallyMarks(board.player2Score,{five : "卌", one : "l"})}
-                    <ScoreButton onClick={() => { setScore(2, "+") }}>+</ScoreButton>
-                    <ScoreButton onClick={() => { setScore(2, "-") }}>-</ScoreButton>
+                    {tallyMarks(board.player2Score, { five: "卌", one: "l" })}
+                    {playerSymbol == "P1" && <>
+                        <ScoreButton onClick={() => { setScore(2, "+") }}>+</ScoreButton>
+                        <ScoreButton onClick={() => { setScore(2, "-") }}>-</ScoreButton>
+                    </>}
                 </SingleScore>
             </ScoreTable>
-            <ShuffleButton onClick={() => { shuffleCards() }}>Mezclar</ShuffleButton>
+            {board.playerTurn == "P1" ?
+                <RightDeck><Card><img src={CardBack} alt="" onClick={() => { shuffleCardsP1() }} /></Card></RightDeck>
+                :
+                <LeftDeck><Card><img src={CardBack} alt="" onClick={() => { shuffleCardsP2() }} /></Card></LeftDeck>
+            }
+
+
         </MainContainer>
     )
 }
