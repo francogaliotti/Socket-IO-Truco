@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import gameContext from "../../gameContext";
+import gameContext from "../../context/gameContext";
 import gameService from "../../services/gameService";
 import socketService from "../../services/socketService";
 
