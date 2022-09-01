@@ -14,7 +14,7 @@ const AppContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 1em;
-  background-color: #aaa;
+  background-color: #444;
 `;
 
 

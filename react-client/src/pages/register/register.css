@@ -1,0 +1,9 @@
+#fieldAddRecord  {
+    height: 30px;
+    width: 20em;
+    font-size: 17px;
+    outline: none;
+    border: 1px solid #8e44ad;
+    border-radius: 3px;
+    padding: 0 10px;
+}

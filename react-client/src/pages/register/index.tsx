@@ -2,9 +2,10 @@ import React, { useContext } from 'react'
 import axios from "axios"
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
-import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import authContext from '../../context/authContext'
+import { JoinButton, JoinRoomContainer } from '../../components/joinRoom'
+import "./register.css"
 
 function Register() {
   const { setUsername, setLogged, setHasAccount } = useContext(authContext)
@@ -37,45 +38,45 @@ function Register() {
     })
   }
   return (
-    <div className='registerContainer'>
-      <div className='registerComponent'>
-        <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-          <Form className="formContainer">
-            <label>Username: </label>
-            <ErrorMessage name='username' component='span' />
-            <Field
-              autoComplete="off"
-              id="fieldAddRecord"
-              name="username"
-              placeholder="Your username" />
-            <label>Password: </label>
-            <ErrorMessage name='password' component='span' />
-            <Field
-              autoComplete="off"
-              type="password"
-              id="fieldAddRecord"
-              name="password"
-              placeholder="Your password" />
-            <label>Confirm password: </label>
-            <ErrorMessage name='password2' component='span' />
-            <Field
-              autoComplete="off"
-              type="password"
-              id="fieldAddRecord"
-              name="password2"
-              placeholder="Your password" />
-            <label>Email: </label>
-            <ErrorMessage name='email' component='span' />
-            <Field
-              autoComplete="off"
-              id="fieldAddRecord"
-              name="email"
-              placeholder="Your email" />
-            <button type='submit'>Register</button>
-          </Form>
-        </Formik>
-      </div>
-    </div>
+    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+
+      <Form className="formContainer">
+        <JoinRoomContainer>
+          <label>Username: </label>
+          <ErrorMessage name='username' component='span' />
+          <Field
+            autoComplete="off"
+            id="fieldAddRecord"
+            name="username"
+            placeholder="Your username" />
+          <label>Password: </label>
+          <ErrorMessage name='password' component='span' />
+          <Field
+            autoComplete="off"
+            type="password"
+            id="fieldAddRecord"
+            name="password"
+            placeholder="Your password" />
+          <label>Confirm password: </label>
+          <ErrorMessage name='password2' component='span' />
+          <Field
+            autoComplete="off"
+            type="password"
+            id="fieldAddRecord"
+            name="password2"
+            placeholder="Your password" />
+          <label>Email: </label>
+          <ErrorMessage name='email' component='span' />
+          <Field
+            autoComplete="off"
+            id="fieldAddRecord"
+            name="email"
+            placeholder="Your email" />
+          <JoinButton type='submit'>Register</JoinButton>
+        </JoinRoomContainer>
+      </Form>
+    </Formik>
+
   )
 }
 

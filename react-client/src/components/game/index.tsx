@@ -5,6 +5,7 @@ import gameService from '../../services/gameService';
 import socketService from '../../services/socketService';
 import { fullDeck } from './fullDeck';
 import CardBack from '../../cards/Back.png'
+import authContext from '../../context/authContext';
 const tallyMarks = require("tally-marks");
 
 
@@ -104,7 +105,7 @@ const RightDeck = styled.div`
   margin-left: 400px;
   margin-top: -220px;
 `
-const ReturnButton = styled.button`
+export const ReturnButton = styled.button`
   outline: none;
   background-color: #8e44ad;
   color: #fff;
@@ -134,6 +135,8 @@ export interface IGameBoard {
     player1Score: number;
     player2Score: number;
     playerTurn: string
+    player1Name: string
+    player2Name: string
 }
 export interface IStartGame {
     symbol: "P1" | "P2";
@@ -151,6 +154,8 @@ function Game() {
 
     } = useContext(gameContext);
 
+    const {username} = useContext(authContext)
+
     const [board, setBoard] = useState<IGameBoard>({
         p1Hand: [],
         p2Hand: [],
@@ -159,7 +164,9 @@ function Game() {
         deck: fullDeck,
         player1Score: 0,
         player2Score: 0,
-        playerTurn: "P1"
+        playerTurn: "P1",
+        player1Name: "",
+        player2Name: ""
     })
 
     const shuffleCardsP1 = () => {
@@ -174,7 +181,8 @@ function Game() {
                 p1Table: [],
                 p2Table: [],
                 deck: newDeck,
-                playerTurn: "P2"
+                playerTurn: "P2",
+                player1Name: username
             }
             setBoard(newBoard)
             console.log(newBoard)
@@ -196,7 +204,8 @@ function Game() {
                 p1Table: [],
                 p2Table: [],
                 deck: newDeck,
-                playerTurn: "P1"
+                playerTurn: "P1",
+                player2Name: username
             }
             setBoard(newBoard)
             console.log(newBoard)
@@ -314,6 +323,7 @@ function Game() {
 
     return (
         <MainContainer>
+            <h4>Tu rival: {playerSymbol == "P1" ? board.player2Name : board.player1Name}</h4>
             <ReturnButton onClick={leaveRoom}>Volver a Inicio</ReturnButton>
             {rivalLeft && (
                 <h2>Tu Rival Abandonó la Partida</h2>

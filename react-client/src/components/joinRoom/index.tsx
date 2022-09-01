@@ -1,13 +1,15 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import Swal from "sweetalert2";
+import authContext from "../../context/authContext";
 import gameContext from "../../context/gameContext";
 import gameService from "../../services/gameService";
 import socketService from "../../services/socketService";
+import { ReturnButton } from "../game";
 
 interface IJoinRoomProps { }
 
-const JoinRoomContainer = styled.div`
+export const JoinRoomContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
@@ -18,7 +20,7 @@ const JoinRoomContainer = styled.div`
   color: #ddd;
 `;
 
-const RoomIdInput = styled.input`
+export const RoomIdInput = styled.input`
   height: 30px;
   width: 20em;
   font-size: 17px;
@@ -28,7 +30,7 @@ const RoomIdInput = styled.input`
   padding: 0 10px;
 `;
 
-const JoinButton = styled.button`
+export const JoinButton = styled.button`
   outline: none;
   background-color: #8e44ad;
   color: #fff;
@@ -52,6 +54,8 @@ export function JoinRoom(props: IJoinRoomProps) {
   const [isJoining, setJoining] = useState(false);
 
   const { setInRoom, isInRoom, roomName, setRoomName } = useContext(gameContext);
+
+  const {username, setLogged} = useContext(authContext)
 
   const handleRoomNameChange = (e: React.ChangeEvent<any>) => {
     const value = e.target.value;
@@ -80,6 +84,7 @@ export function JoinRoom(props: IJoinRoomProps) {
   return (
     <form onSubmit={joinRoom}>
       <JoinRoomContainer>
+      <h4>Hola {username}!</h4>
         <h4>Ingrese el ID de la sala</h4>
         <RoomIdInput
           placeholder="Room ID"
@@ -89,6 +94,7 @@ export function JoinRoom(props: IJoinRoomProps) {
         <JoinButton type="submit" disabled={isJoining}>
           {isJoining ? "Ingresando..." : "Ingresar"}
         </JoinButton>
+        <ReturnButton onClick={()=>setLogged(false)}>Cerrar sesión</ReturnButton>
       </JoinRoomContainer>
     </form>
   );
